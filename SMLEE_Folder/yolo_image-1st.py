@@ -31,11 +31,24 @@ colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
 
 # 이미지 가져오기
-# img = cv2.imread("../image/people6.jpg")
-img = cv2.imread("../image/lenna.png")
+img = cv2.imread("../image/people6.jpg")
+# img = cv2.imread("../image/lenna.png")
 # img = cv2.resize(img, None, fx=0.4, fy=0.4)
 
 height, width, channels = img.shape
+
+
+
+
+
+
+# to make namedwindow;
+cv2.namedWindow('map', cv2.WINDOW_NORMAL)
+# same to original image;
+cv2.resizeWindow('map', width, height)
+
+
+
 
 # Detecting objects
 blob = cv2.dnn.blobFromImage(img, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
@@ -87,9 +100,10 @@ Kmean = KMeans(n_clusters=2)
 
 
 
+
+
+
 red = (0,0,255)
-
-
 countPeople = 0
 font = cv2.FONT_HERSHEY_PLAIN
 for i in range(len(boxes)):
@@ -99,27 +113,45 @@ for i in range(len(boxes)):
         label = str(classes[class_ids[i]])
         color = colors[i]
         cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
-        cv2.putText(img, "%s  (%d , %d)"%(label,x+w/2,y+h/2), (x, y + 30), font, 3, color, 3)
-        img = cv2.line(img, (int(x+w/2), int(y+h/2)) , (int(x+w/2), int(y+h/2)), red , 5 )
+        cv2.putText(img, "%s(%d, %d)" %(label, x+w/2, y+h/2), (x, y), font, 1, color, 2)
+
+        # to draw circle at center;
+        img = cv2.circle(img, (int(x+w/2), int(y+h/2)), 0, red, 20)
 
 
-        white_canvas = cv2.line(white_canvas, (int(x+w/2), int(y+h/2)), (int(x+w/2), int(y+h/2)), red, 20 )
-        # white_canvas = cv2.line(white_canvas, (int(x-w/2), int(y-h/2)), (int(x+w/2), int(y+h/2)), red, 10 )
-
+        # white_canvas = cv2.line(white_canvas, (int(x+w/2), int(y+h/2)), (int(x+w/2), int(y+h/2)), red, 200 )
+        white_canvas = cv2.circle(white_canvas, (int(x+w/2), int(y+h/2)), 0, red, 20)
+        cv2.rectangle(white_canvas, (x, y), (x + w, y + h), color, 2)
 
 
         print("x is ",x+w/2, "y is",y+h/2)
         countPeople += 1
 
 
+
+
+
+
+
+
 print("counting: ", countPeople)
 
 
-cv2.namedWindow('map', cv2.WINDOW_NORMAL)              # gray 이름으로 창 생성
-cv2.imshow("Image", img)                                # origin 창에 이미지 표시
-cv2.imshow('map', white_canvas)                            # map 창에 이미지 표시
 
+cv2.imshow('map', white_canvas)                            # map 창에 이미지 표시
 # cv2.moveWindow('map', 100, 100)                        # 창 위치 변경
+
+cv2.imshow("Image", img)
+
+
+
+
+
+
+
+
+
+
 
 
 
