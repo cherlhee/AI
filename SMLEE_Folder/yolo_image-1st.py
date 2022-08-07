@@ -8,42 +8,14 @@ import matplotlib as plt
 
 
 # 점찍는 함수
-
+# color: 255, white
 white_canvas = np.zeros((1000, 1000, 3), dtype="uint8") + 255
+# white_canvas = np.zeros((1000, 1000, 3), dtype="uint8") + 0
 
-def img_show(title='image', img=None, figsize=(8, 5)):
-    plt.figure(figsize=figsize)
 
-    if type(img) == list:
-        if type(title) == list:
-            titles = title
-        else:
-            titles = []
 
-            for i in range(len(img)):
-                titles.append(title)
 
-        for i in range(len(img)):
-            if len(img[i].shape) <= 2:
-                rgbImg = cv2.cvtColor(img[i], cv2.COLOR_GRAY2RGB)
-            else:
-                rgbImg = cv2.cvtColor(img[i], cv2.COLOR_BGR2RGB)
 
-            plt.subplot(1, len(img), i + 1), plt.imshow(rgbImg)
-            plt.title(titles[i])
-            plt.xticks([]), plt.yticks([])
-
-        plt.show()
-    else:
-        if len(img.shape) < 3:
-            rgbImg = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-        else:
-            rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-        plt.imshow(rgbImg)
-        plt.title(title)
-        plt.xticks([]), plt.yticks([])
-        plt.show()
 
 
 # Yolo 로드
@@ -59,7 +31,8 @@ colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
 
 # 이미지 가져오기
-img = cv2.imread("../image/people6.jpg")
+# img = cv2.imread("../image/people6.jpg")
+img = cv2.imread("../image/lenna.png")
 # img = cv2.resize(img, None, fx=0.4, fy=0.4)
 
 height, width, channels = img.shape
@@ -68,6 +41,12 @@ height, width, channels = img.shape
 blob = cv2.dnn.blobFromImage(img, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
 net.setInput(blob)
 outs = net.forward(output_layers)
+
+
+
+
+
+
 
 # 정보를 화면에 표시
 class_ids = []
@@ -124,8 +103,11 @@ for i in range(len(boxes)):
         img = cv2.line(img, (int(x+w/2), int(y+h/2)) , (int(x+w/2), int(y+h/2)), red , 5 )
 
 
-        # white_canvas = cv2.line(black_canvas, (int(x+w/2), int(y+h/2)), (int(x+w/2), int(y+h/2)), red, 20 )
         white_canvas = cv2.line(white_canvas, (int(x+w/2), int(y+h/2)), (int(x+w/2), int(y+h/2)), red, 20 )
+        # white_canvas = cv2.line(white_canvas, (int(x-w/2), int(y-h/2)), (int(x+w/2), int(y+h/2)), red, 10 )
+
+
+
         print("x is ",x+w/2, "y is",y+h/2)
         countPeople += 1
 
@@ -137,10 +119,12 @@ cv2.namedWindow('map', cv2.WINDOW_NORMAL)              # gray 이름으로 창 �
 cv2.imshow("Image", img)                                # origin 창에 이미지 표시
 cv2.imshow('map', white_canvas)                            # map 창에 이미지 표시
 
-cv2.moveWindow('map', 100, 100)                        # 창 위치 변경
+# cv2.moveWindow('map', 100, 100)                        # 창 위치 변경
 
-cv2.waitKey(0)                                          # 아무키나 누르면
-cv2.resizeWindow('map', 100, 100)                      # 창 크기 변경 (변경 됨))
+
+
+# cv2.waitKey(0)                                          # 아무키나 누르면
+# cv2.resizeWindow('map', 1000, 1000)                      # 창 크기 변경 (변경 됨))
 
 cv2.waitKey(0)                                          # 아무키나 누르면
 cv2.destroyWindow("map")                               # map 창 닫기
